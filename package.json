@@ -1,0 +1,26 @@
+{
+  "name": "datadlue-web",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Datadlue Labs futuristic single-page website",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "gsap": "^3.13.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.30.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^5.4.19"
+  }
+}

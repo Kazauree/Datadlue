@@ -344,6 +344,7 @@ function HomePage() {
       <FeaturedSlider />
       <FeatureCards />
       <ServicesShowcase />
+      <DownloadSection />
       <ContactBand />
     </>
   );
@@ -712,6 +713,184 @@ function ServicesShowcase() {
             <p>{service.description}</p>
           </article>
         ))}
+      </div>
+    </section>
+  );
+}
+
+/* ── Download Section ─────────────────────────────────────── */
+function DownloadSection() {
+  const screenshots = [
+    {
+      src: '/screen1.png',
+      alt: 'Datadlue App Dashboard Screenshot',
+      title: 'Real-Time Farm Dashboard',
+      description: 'Monitor soil moisture, weather data, and yield forecasts instantly.'
+    },
+    {
+      src: '/screen2.png',
+      alt: 'Datadlue App Commodity Market Prices Screenshot',
+      title: 'Live Commodity Market Prices',
+      description: 'Track daily commodity price trends across Nigeria and make profitable decisions.'
+    },
+    {
+      src: '/screen3.png',
+      alt: 'Datadlue App AI Crop Insights Screenshot',
+      title: 'AI Health & Risk Assessment',
+      description: 'Scan leaves to identify crop diseases early and receive actionable recommendations.'
+    }
+  ];
+
+  const [activeScreen, setActiveScreen] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveScreen((prev) => (prev + 1) % screenshots.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [screenshots.length]);
+
+  return (
+    <section className="section download-section" data-reveal aria-labelledby="download-heading">
+      <div className="download-grid">
+        <div className="download-info">
+          <p className="eyebrow">Mobile Application</p>
+          <h2 id="download-heading" className="section-title">
+            Datadlue AI Agriculture App
+          </h2>
+          <p className="download-desc">
+            Put precision agriculture, smart crop intelligence, and live market pricing indices in your pocket. Built specifically to empower local farmers and cooperatives across Nigeria, even with low network connectivity.
+          </p>
+
+          <div className="app-stats-grid">
+            <div className="app-stat-card">
+              <span className="app-stat-num">500+</span>
+              <span className="app-stat-label">Active Farmers</span>
+            </div>
+            <div className="app-stat-card">
+              <span className="app-stat-num">4.8★</span>
+              <span className="app-stat-label">User Rating</span>
+            </div>
+            <div className="app-stat-card">
+              <span className="app-stat-num">98%</span>
+              <span className="app-stat-label">Offline Access</span>
+            </div>
+          </div>
+
+          <div className="download-actions-wrap">
+            <a
+              href="/app-release.apk"
+              download="Datadlue-Agri-App.apk"
+              className="btn btn-primary btn-download"
+            >
+              <span className="btn-icon">📥</span>
+              <div className="btn-text-wrap">
+                <span className="btn-subtext">Download for Android</span>
+                <strong className="btn-maintext">Download Our App</strong>
+              </div>
+            </a>
+            
+            <div className="apk-metadata">
+              <span>Android APK v1.0.4</span>
+              <span>•</span>
+              <span>Size: 5.7 MB</span>
+            </div>
+          </div>
+
+          {/* QR Code Container with Animation */}
+          <div className="qr-container-wrap">
+            <div className="qr-box">
+              <div className="qr-laser-scanner" />
+              {/* Decorative corners */}
+              <div className="qr-corner qr-top-left" />
+              <div className="qr-corner qr-top-right" />
+              <div className="qr-corner qr-bottom-left" />
+              <div className="qr-corner qr-bottom-right" />
+              
+              {/* CSS Mock QR Code Grid */}
+              <div className="qr-mock-code">
+                {/* 3 standard positioning squares in corners */}
+                <div className="qr-pos-square qr-pos-tl"><div className="qr-pos-inner" /></div>
+                <div className="qr-pos-square qr-pos-tr"><div className="qr-pos-inner" /></div>
+                <div className="qr-pos-square qr-pos-bl"><div className="qr-pos-inner" /></div>
+                
+                {/* Small random data pattern layout */}
+                <div className="qr-dots-matrix">
+                  {Array.from({ length: 49 }).map((_, i) => (
+                    <span 
+                      key={i} 
+                      className="qr-matrix-dot" 
+                      style={{ 
+                        opacity: Math.random() > 0.45 ? 1 : 0.15,
+                        backgroundColor: Math.random() > 0.6 ? 'var(--clr-primary)' : 'var(--clr-accent)' 
+                      }} 
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="qr-text">
+              <strong>Scan to download</strong>
+              <span>Point your smartphone camera to download the APK instantly</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Right side: Interactive app screenshot mockup */}
+        <div className="download-visual">
+          <div className="phone-mockup-wrapper">
+            <div className="phone-outer-shell">
+              <div className="phone-screen-container">
+                <div className="phone-speaker-camera" />
+                <div className="phone-screen-slider">
+                  {screenshots.map((screen, idx) => (
+                    <div 
+                      key={idx} 
+                      className={`phone-slide ${idx === activeScreen ? 'active' : ''}`}
+                    >
+                      <img src={screen.src} alt={screen.alt} className="phone-screenshot-img" />
+                      <div className="phone-slide-caption">
+                        <h4>{screen.title}</h4>
+                        <p>{screen.description}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Slider Controls */}
+            <div className="phone-slider-controls">
+              <button 
+                type="button" 
+                className="slider-nav-btn" 
+                onClick={() => setActiveScreen((prev) => (prev - 1 + screenshots.length) % screenshots.length)}
+                aria-label="Previous screenshot"
+              >
+                ←
+              </button>
+              <div className="phone-slider-dots">
+                {screenshots.map((_, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    className={`phone-dot ${idx === activeScreen ? 'active' : ''}`}
+                    onClick={() => setActiveScreen(idx)}
+                    aria-label={`Go to screenshot ${idx + 1}`}
+                  />
+                ))}
+              </div>
+              <button 
+                type="button" 
+                className="slider-nav-btn" 
+                onClick={() => setActiveScreen((prev) => (prev + 1) % screenshots.length)}
+                aria-label="Next screenshot"
+              >
+                →
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

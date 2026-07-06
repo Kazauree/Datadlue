@@ -1545,3 +1545,415 @@ p { line-height: 1.75; }
   padding: 0; margin: -1px; overflow: hidden;
   clip: rect(0,0,0,0); white-space: nowrap; border: 0;
 }
+
+/* ── App Download Section ─────────────────────────────────── */
+.download-section {
+  padding: var(--section-pad) clamp(20px, 5vw, 60px);
+}
+
+.download-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 80px;
+  align-items: center;
+}
+
+.download-desc {
+  color: var(--clr-text-muted);
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin-bottom: 32px;
+}
+
+/* App Stats */
+.app-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.app-stat-card {
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  padding: 16px 20px;
+  border-radius: var(--radius-md);
+  text-align: center;
+  transition: all var(--t-fast);
+}
+
+.app-stat-card:hover {
+  border-color: var(--clr-border-hover);
+  background: var(--clr-surface-hover);
+  transform: translateY(-2px);
+}
+
+.app-stat-num {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--clr-primary);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.app-stat-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--clr-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* Download Action Button */
+.download-actions-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 40px;
+}
+
+.btn-download {
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+  padding: 16px 36px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--clr-primary) 0%, var(--clr-secondary) 100%);
+  color: #1a0800;
+  box-shadow: 0 0 30px rgba(245,164,74,0.3);
+  text-align: left;
+}
+
+.btn-download:hover {
+  box-shadow: 0 0 50px rgba(245,164,74,0.6);
+  transform: translateY(-2px);
+}
+
+.btn-download .btn-icon {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.btn-text-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.btn-subtext {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.8;
+}
+
+.btn-maintext {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.apk-metadata {
+  display: flex;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--clr-text-faint);
+  padding-left: 8px;
+}
+
+/* QR Code Mock with scan animation */
+.qr-container-wrap {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  background: rgba(245, 164, 74, 0.02);
+  border: 1px solid var(--clr-border);
+  padding: 24px;
+  border-radius: var(--radius-lg);
+  max-width: 500px;
+}
+
+.qr-box {
+  width: 100px;
+  height: 100px;
+  background: rgba(12, 8, 2, 0.9);
+  border: 1px solid rgba(245, 164, 74, 0.3);
+  border-radius: var(--radius-sm);
+  position: relative;
+  overflow: hidden;
+  padding: 10px;
+  flex-shrink: 0;
+}
+
+/* Scanning laser animation */
+.qr-laser-scanner {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--clr-primary), transparent);
+  box-shadow: 0 0 10px var(--clr-primary), 0 0 20px var(--clr-primary);
+  z-index: 10;
+  animation: qr-laser 3s ease-in-out infinite;
+}
+
+@keyframes qr-laser {
+  0%, 100% { top: 0%; }
+  50% { top: 100%; }
+}
+
+/* Glowing corners */
+.qr-corner {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--clr-primary);
+  z-index: 5;
+}
+
+.qr-top-left { top: 6px; left: 6px; border-right: none; border-bottom: none; }
+.qr-top-right { top: 6px; right: 6px; border-left: none; border-bottom: none; }
+.qr-bottom-left { bottom: 6px; left: 6px; border-right: none; border-top: none; }
+.qr-bottom-right { bottom: 6px; right: 6px; border-left: none; border-top: none; }
+
+.qr-mock-code {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Positioning squares */
+.qr-pos-square {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--clr-primary);
+  background: transparent;
+  padding: 3px;
+}
+
+.qr-pos-inner {
+  width: 100%;
+  height: 100%;
+  background: var(--clr-primary);
+}
+
+.qr-pos-tl { top: 0; left: 0; }
+.qr-pos-tr { top: 0; right: 0; }
+.qr-pos-bl { bottom: 0; left: 0; }
+
+.qr-dots-matrix {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(7, 1fr);
+  gap: 5px;
+  padding: 10px;
+}
+
+.qr-matrix-dot {
+  border-radius: 1px;
+  width: 100%;
+  height: 100%;
+}
+
+.qr-text {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.qr-text strong {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  color: var(--clr-text);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.qr-text span {
+  font-size: 0.82rem;
+  color: var(--clr-text-muted);
+  line-height: 1.5;
+}
+
+/* Phone Mockup Slider */
+.phone-mockup-wrapper {
+  position: relative;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 320px;
+}
+
+.phone-outer-shell {
+  width: 100%;
+  aspect-ratio: 9 / 18.5;
+  border-radius: 40px;
+  background: #020202;
+  border: 12px solid #1a1a1a;
+  box-shadow: 0 30px 100px rgba(0,0,0,0.8), 0 0 0 2px rgba(245,164,74,0.1), var(--glow-primary);
+  position: relative;
+  overflow: hidden;
+}
+
+.phone-speaker-camera {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90px;
+  height: 20px;
+  background: #000;
+  border-radius: 10px;
+  z-index: 20;
+}
+
+.phone-screen-container {
+  width: 100%;
+  height: 100%;
+  background: var(--clr-bg);
+  position: relative;
+}
+
+.phone-screen-slider {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.phone-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.8s;
+  display: flex;
+  flex-direction: column;
+}
+
+.phone-slide.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.phone-screenshot-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.phone-slide-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(12,8,2,0.95) 40%, rgba(12,8,2,0.7) 80%, transparent 100%);
+  padding: 30px 20px 24px;
+  border-top: 1px solid rgba(245,164,74,0.1);
+  text-align: center;
+  z-index: 15;
+}
+
+.phone-slide-caption h4 {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: var(--clr-primary);
+  margin-bottom: 6px;
+}
+
+.phone-slide-caption p {
+  font-size: 0.8rem;
+  color: var(--clr-text-muted);
+  line-height: 1.5;
+}
+
+/* Slider Controls */
+.phone-slider-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 24px;
+  background: rgba(245,164,74,0.02);
+  border: 1px solid var(--clr-border);
+  padding: 8px 16px;
+  border-radius: 99px;
+}
+
+.slider-nav-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--clr-border);
+  color: var(--clr-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  transition: all var(--t-fast);
+}
+
+.slider-nav-btn:hover {
+  background: rgba(245,164,74,0.08);
+  border-color: var(--clr-primary);
+}
+
+.phone-slider-dots {
+  display: flex;
+  gap: 8px;
+}
+
+.phone-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--clr-border);
+  transition: all var(--t-fast);
+}
+
+.phone-dot.active {
+  background: var(--clr-primary);
+  transform: scale(1.25);
+  box-shadow: 0 0 8px var(--clr-primary);
+}
+
+/* Responsive download section */
+@media (max-width: 1024px) {
+  .download-grid {
+    grid-template-columns: 1fr;
+    gap: 60px;
+  }
+  
+  .download-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .qr-container-wrap {
+    max-width: 100%;
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-stats-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    width: 100%;
+  }
+  
+  .qr-container-wrap {
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+  }
+}
+

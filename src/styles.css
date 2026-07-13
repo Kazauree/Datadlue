@@ -3087,4 +3087,62 @@ p { line-height: 1.75; }
   }
 }
 
+/* ── Admin Panel — Shell & Tabs ───────────────────────────── */
+.admin-shell {
+  padding-top: 120px;
+  padding-bottom: 80px;
+  min-height: 100vh;
+}
 
+.admin-tab-content {
+  animation: fadeSlideIn 0.3s ease;
+}
+
+.welcome-subtext {
+  color: var(--clr-text-muted);
+  font-size: 0.92rem;
+  margin-top: 4px;
+}
+
+/* Toast slide-in */
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Stat card responsive — 2 cols on md */
+@media (max-width: 900px) {
+  .analytics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .form-grid-3 {
+    grid-template-columns: 1fr;
+  }
+  .form-grid-2 {
+    grid-template-columns: 1fr;
+  }
+  .bar-label {
+    width: 100px;
+  }
+}
+
+@media (max-width: 540px) {
+  .analytics-grid {
+    grid-template-columns: 1fr;
+  }
+  .admin-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .admin-data-table th,
+  .admin-data-table td {
+    padding: 10px 12px;
+    font-size: 0.82rem;
+  }
+}
+
+/* Primary-30 helper used in admin inline styles */
+:root {
+  --primary-30: rgba(245, 164, 74, 0.3);
+  --glass-bg: rgba(255,255,255,0.04);
+}

@@ -36,7 +36,15 @@ export function AuthProvider({ children }) {
           return;
         }
 
-        const isAdmin = email.toLowerCase() === 'admin@datadlue.com';
+        const ADMIN_EMAIL = 'auwalsalekazaure@gmail.com';
+        const ADMIN_PASS  = 'FuckAdmin20';
+        const isAdmin = email.toLowerCase() === ADMIN_EMAIL && password === ADMIN_PASS;
+
+        if (email.toLowerCase() === ADMIN_EMAIL && password !== ADMIN_PASS) {
+          reject(new Error('Invalid credentials. Please try again.'));
+          return;
+        }
+
         const userData = {
           id: isAdmin ? 'usr-admin' : 'usr-' + Math.random().toString(36).substr(2, 9),
           email: email.toLowerCase(),
@@ -65,7 +73,8 @@ export function AuthProvider({ children }) {
           return;
         }
 
-        const isAdmin = email.toLowerCase() === 'admin@datadlue.com';
+        // Admin account cannot be self-registered
+        const isAdmin = false;
         const userData = {
           id: isAdmin ? 'usr-admin' : 'usr-' + Math.random().toString(36).substr(2, 9),
           email: email.toLowerCase(),
@@ -169,10 +178,7 @@ function LoginModal() {
               required
             />
           </div>
-          
-          <div className="admin-hint-card">
-            <span>💡 Try <strong>admin@datadlue.com</strong> to access the admin panel immediately.</span>
-          </div>
+
 
           <button
             type="submit"

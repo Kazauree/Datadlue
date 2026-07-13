@@ -6,7 +6,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../database/db';
-import { useAuth } from './ClerkMockAuth';
+import { useAuth, openPaystack } from './ClerkMockAuth';
 
 export default function ProjectMarketplace() {
   const navigate = useNavigate();
@@ -95,7 +95,7 @@ export default function ProjectMarketplace() {
     });
   }, [projects, searchQuery, selectedDept, selectedLevel, priceRange, selectedTechs]);
 
-  // Handle mock buy flow
+  // Handle buy — Paystack payment flow
   const handleBuy = async (proj) => {
     if (!user) {
       setSelectedProject(null);
@@ -105,19 +105,34 @@ export default function ProjectMarketplace() {
 
     setBuying(true);
     try {
-      await db.purchaseProject(proj.id, user.email);
-      alert(`🎉 Purchase Successful! "${proj.title}" has been added to your dashboard.`);
-      setSelectedProject(null);
-      navigate('/dashboard');
+      openPaystack({
+        email:  user.email,
+        amount: proj.price,
+        name:   proj.title,
+        onSuccess: async (res) => {
+          try {
+            await db.purchaseProject(proj.id, user.email);
+            alert(`🎉 Payment successful! Ref: ${res.reference}\n\n"${proj.title}" has been added to your dashboard.`);
+            setSelectedProject(null);
+            navigate('/dashboard');
+          } catch (err) {
+            alert('Payment received but order failed. Please contact support with ref: ' + res.reference);
+          } finally {
+            setBuying(false);
+          }
+        },
+        onClose: () => {
+          setBuying(false);
+        }
+      });
     } catch (err) {
-      alert(err.message);
-    } finally {
+      alert('Could not load payment gateway. Please check your connection and try again.');
       setBuying(false);
     }
   };
 
   return (
-    <div className="marketplace-container" data-reveal>
+    <div className="marketplace-container">
       <div className="marketplace-hero">
         <p className="eyebrow">Academic Research Hub</p>
         <h1>Final Year Project Marketplace</h1>

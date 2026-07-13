@@ -10,6 +10,11 @@ import {
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
+import { AuthProvider, useAuth } from './components/ClerkMockAuth';
+import ProjectMarketplace from './components/ProjectMarketplace';
+import UserDashboard from './components/UserDashboard';
+import AdminPanel from './components/AdminPanel';
+
 gsap.registerPlugin(ScrollTrigger);
 
 /* ── Company data ─────────────────────────────────────────── */
@@ -180,19 +185,24 @@ function App() {
   useHeaderScroll();
 
   return (
-    <div className="app-shell">
-      <BackgroundEffects />
-      <Header />
-      <main className="page-shell">
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/blog" element={<BlogIndex />} />
-          <Route path="/blog/:slug" element={<BlogPost />} />
-        </Routes>
-      </main>
-      <SiteFooter />
-    </div>
+    <AuthProvider>
+      <div className="app-shell">
+        <BackgroundEffects />
+        <Header />
+        <main className="page-shell">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/blog" element={<BlogIndex />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
+            <Route path="/marketplace" element={<ProjectMarketplace />} />
+            <Route path="/dashboard" element={<UserDashboard />} />
+            <Route path="/admin" element={<AdminPanel />} />
+          </Routes>
+        </main>
+        <SiteFooter />
+      </div>
+    </AuthProvider>
   );
 }
 
@@ -259,11 +269,23 @@ function BackgroundEffects() {
 /* =========================================================== */
 function Header() {
   const [open, setOpen] = useState(false);
-  const navItems = [
-    { to: '/', label: 'Home', exact: true },
-    { to: '/about', label: 'About' },
-    { to: '/blog', label: 'Blog' },
-  ];
+  const { user, logout, setShowLoginModal } = useAuth();
+
+  const navItems = useMemo(() => {
+    const items = [
+      { to: '/', label: 'Home', exact: true },
+      { to: '/marketplace', label: 'Projects Hub' },
+      { to: '/about', label: 'About' },
+      { to: '/blog', label: 'Blog' },
+    ];
+    if (user) {
+      items.push({ to: '/dashboard', label: 'Dashboard' });
+      if (user.isAdmin) {
+        items.push({ to: '/admin', label: 'Admin Panel' });
+      }
+    }
+    return items;
+  }, [user]);
 
   const close = useCallback(() => setOpen(false), []);
 
@@ -308,13 +330,30 @@ function Header() {
             {item.label}
           </NavLink>
         ))}
-        <a
-          className="nav-link nav-cta"
-          href={`mailto:${company.email}`}
-          onClick={close}
-        >
-          Start a project
-        </a>
+        
+        {user ? (
+          <button
+            type="button"
+            className="nav-link nav-cta logout-btn"
+            onClick={() => {
+              logout();
+              close();
+            }}
+          >
+            Log Out
+          </button>
+        ) : (
+          <button
+            type="button"
+            className="nav-link nav-cta"
+            onClick={() => {
+              setShowLoginModal(true);
+              close();
+            }}
+          >
+            Log In
+          </button>
+        )}
       </nav>
 
       <button
@@ -344,6 +383,7 @@ function HomePage() {
       <FeaturedSlider />
       <FeatureCards />
       <ServicesShowcase />
+      <MarketplaceTeaser />
       <DownloadSection />
       <ContactBand />
     </>
@@ -713,6 +753,73 @@ function ServicesShowcase() {
             <p>{service.description}</p>
           </article>
         ))}
+      </div>
+    </section>
+  );
+}
+
+/* ── Marketplace Teaser ───────────────────────────────────── */
+function MarketplaceTeaser() {
+  const teaserProjects = [
+    {
+      title: 'AgriPulse: AI-crop Health analysis & Diagnostics System',
+      dept: 'Computer Science',
+      price: '₦35,000',
+      tech: ['React', 'Python', 'FastAPI']
+    },
+    {
+      title: 'Delta Shield: Advanced Cyber Packet Monitor & Intrusion Detector',
+      dept: 'Cybersecurity',
+      price: '₦45,000',
+      tech: ['Python', 'Docker', 'Elasticsearch']
+    },
+    {
+      title: 'IoT smart Agriculture Automated Irrigation sensor controller',
+      dept: 'IT',
+      price: '₦30,000',
+      tech: ['C++', 'React', 'Node.js']
+    }
+  ];
+
+  return (
+    <section className="section teaser-section" data-reveal aria-labelledby="teaser-heading">
+      <div className="section-header">
+        <div>
+          <p className="eyebrow">Project Marketplace</p>
+          <h2 id="teaser-heading">Final Year Project Hub</h2>
+        </div>
+        <p className="section-caption">
+          Verified source code, full documentation reports, and live GUI assets to accelerate your academic research.
+        </p>
+      </div>
+
+      <div className="teaser-grid">
+        {teaserProjects.map((p, idx) => (
+          <div key={idx} className="teaser-card glass" data-reveal data-delay={idx + 1}>
+            <span className="dept-badge">{p.dept}</span>
+            <h3>{p.title}</h3>
+            <div className="teaser-tags">
+              {p.tech.map((t) => (
+                <span key={t} className="tech-tag">{t}</span>
+              ))}
+            </div>
+            <div className="teaser-footer">
+              <div className="teaser-price">
+                <small>Documentation + Code</small>
+                <strong>{p.price}</strong>
+              </div>
+              <Link to="/marketplace" className="btn btn-secondary btn-sm">
+                View Project →
+              </Link>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="teaser-action-row" style={{ marginTop: 48, textAlign: 'center' }}>
+        <Link to="/marketplace" className="btn btn-primary">
+          Explore Project Marketplace Hub →
+        </Link>
       </div>
     </section>
   );

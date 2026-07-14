@@ -5,6 +5,7 @@
 // ============================================================
 
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
+import { ClerkProvider, useUser, useAuth as useClerkAuth, SignInButton, SignUpButton, UserButton } from '@clerk/react';
 
 /* ── Paystack public key (replace with your real key) ──────── */
 const PAYSTACK_PUBLIC_KEY = 'pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
@@ -12,6 +13,46 @@ const PAYSTACK_PUBLIC_KEY = 'pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
 /* ── Context ─────────────────────────────────────────────── */
 const AuthContext = createContext(null);
 export const useAuth = () => useContext(AuthContext);
+
+function ClerkAuthBridge({ children, value, setShowLoginModal, setShowRegisterModal }) {
+  const { user: clerkUser, isLoaded } = useUser();
+  const { signOut } = useClerkAuth();
+
+  const bridgedUser = React.useMemo(() => {
+    if (!isLoaded || !clerkUser) return null;
+    const email = clerkUser.primaryEmailAddress?.emailAddress || '';
+    const ADMIN_EMAIL = 'auwalsalekazaure@gmail.com';
+    return {
+      id: clerkUser.id,
+      email: email,
+      fullName: clerkUser.fullName || email.split('@')[0],
+      isAdmin: email.toLowerCase() === ADMIN_EMAIL,
+      joinedAt: clerkUser.createdAt ? new Date(clerkUser.createdAt).toISOString() : new Date().toISOString()
+    };
+  }, [clerkUser, isLoaded]);
+
+  const bridgedValue = React.useMemo(() => ({
+    user: bridgedUser,
+    loading: !isLoaded,
+    logout: signOut,
+    showLoginModal: value.showLoginModal,
+    setShowLoginModal: setShowLoginModal,
+    showRegisterModal: value.showRegisterModal,
+    setShowRegisterModal: setShowRegisterModal,
+    loginAdmin: value.loginAdmin,
+    initiateLogin: value.initiateLogin,
+    completeLogin: value.completeLogin,
+    initiateRegister: value.initiateRegister,
+    completeRegister: value.completeRegister,
+    isMockAuth: false
+  }), [bridgedUser, isLoaded, signOut, value, setShowLoginModal, setShowRegisterModal]);
+
+  return (
+    <AuthContext.Provider value={bridgedValue}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
 
 /* ══════════════════════════════════════════════════════════ */
 /* UTILITIES                                                   */
@@ -159,6 +200,8 @@ const AUTH_CSS = `
 /* PROVIDER                                                    */
 /* ══════════════════════════════════════════════════════════ */
 export function AuthProvider({ children }) {
+  const publishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+
   const [user,              setUser]              = useState(null);
   const [loading,           setLoading]           = useState(true);
   const [showLoginModal,    setShowLoginModal]    = useState(false);
@@ -247,19 +290,33 @@ export function AuthProvider({ children }) {
     localStorage.removeItem('datadlue_user');
   };
 
-  const value = {
+  const mockValue = {
     user, loading, logout,
     showLoginModal,    setShowLoginModal,
     showRegisterModal, setShowRegisterModal,
     loginAdmin, initiateLogin, completeLogin,
     initiateRegister, completeRegister,
-    // Legacy compat
-    login: initiateLogin,
-    register: initiateRegister,
+    isMockAuth: true
   };
 
+  if (publishableKey) {
+    return (
+      <ClerkProvider publishableKey={publishableKey} afterSignOutUrl="/">
+        <ClerkAuthBridge
+          value={mockValue}
+          setShowLoginModal={setShowLoginModal}
+          setShowRegisterModal={setShowRegisterModal}
+        >
+          {children}
+          {showLoginModal    && <LoginModal />}
+          {showRegisterModal && <RegisterModal />}
+        </ClerkAuthBridge>
+      </ClerkProvider>
+    );
+  }
+
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider value={mockValue}>
       <style>{AUTH_CSS}</style>
       {children}
       {showLoginModal    && <LoginModal />}

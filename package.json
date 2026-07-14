@@ -16,6 +16,8 @@
   "dependencies": {
     "@clerk/clerk-react": "^5.61.3",
     "@clerk/react": "^6.12.2",
+    "@supabase/ssr": "^0.12.1",
+    "@supabase/supabase-js": "^2.110.3",
     "gsap": "^3.13.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

@@ -87,22 +87,25 @@ const INITIAL_PROJECTS = [
   }
 ];
 
-// Initialize mock DB if empty
-if (!localStorage.getItem(MOCK_PROJECTS_KEY)) {
-  localStorage.setItem(MOCK_PROJECTS_KEY, JSON.stringify(INITIAL_PROJECTS));
-}
-if (!localStorage.getItem(MOCK_ORDERS_KEY)) {
-  localStorage.setItem(MOCK_ORDERS_KEY, JSON.stringify([]));
+// Lazy-init: called on first data access, not at module load time
+function ensureInit() {
+  try {
+    if (!localStorage.getItem(MOCK_PROJECTS_KEY)) {
+      localStorage.setItem(MOCK_PROJECTS_KEY, JSON.stringify(INITIAL_PROJECTS));
+    }
+    if (!localStorage.getItem(MOCK_ORDERS_KEY)) {
+      localStorage.setItem(MOCK_ORDERS_KEY, JSON.stringify([]));
+    }
+  } catch (e) {
+    console.warn('[db] localStorage unavailable:', e.message);
+  }
 }
 
 // ── database helper API ──────────────────────────────────────
 export const db = {
   // Get all projects
   getProjects: async () => {
-    // If Supabase keys exist in env, we can hook it up here:
-    // const { data, error } = await supabase.from('projects').select('*');
-    // if (error) throw error; return data;
-
+    ensureInit();
     const data = localStorage.getItem(MOCK_PROJECTS_KEY);
     return data ? JSON.parse(data) : [];
   },
@@ -171,6 +174,7 @@ export const db = {
 
   // Get orders
   getOrders: async () => {
+    ensureInit();
     const data = localStorage.getItem(MOCK_ORDERS_KEY);
     return data ? JSON.parse(data) : [];
   },
